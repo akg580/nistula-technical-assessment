@@ -12,6 +12,7 @@ env/
 
 # Env files
 .env
+.env.example
 
 # Tooling
 .pytest_cache/
