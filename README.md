@@ -2,7 +2,6 @@
 
 A FastAPI backend that receives inbound guest messages from any channel, normalises them into a unified schema, drafts AI replies via the Claude API, and returns a confidence-scored response with an action recommendation.
 
----
 
 ## Repository Structure
 
@@ -133,7 +132,7 @@ The base score reflects how deterministic the answer is given the property conte
 Applied after the base score:
 
 | Modifier | Effect | Reasoning |
-|---|---|---|
+
 | `booking_ref` present | +0.04 | Guest is confirmed; context is grounded in a real record |
 | No `property_id` | −0.08 | Used fallback/generic context; reply may not match actual property |
 | Reply under 60 chars | −0.06 | Likely an error, API hiccup, or empty template |
@@ -146,7 +145,7 @@ Applied after the base score:
 ### Action routing
 
 | Score | Action | Meaning |
-|---|---|---|
+
 | `complaint` (any score) | `escalate` | Hard rule — human always reviews complaints |
 | ≥ 0.85 | `auto_send` | High confidence — send without review |
 | 0.60–0.84 | `agent_review` | Moderate confidence — queue for human editing |
@@ -168,14 +167,3 @@ Different channels send different metadata fields. WhatsApp might send a phone n
 ### Why separate `ai_drafted_reply` and `final_reply` in the schema?
 To preserve the original AI output even when an agent edits it. The delta between `ai_drafted_reply` and `final_reply` is training data — over time it shows us exactly where the AI falls short and for which query types agents are making the most changes. This is how the system gets better.
 
----
-
-## What I Would Add With More Time
-
-- **Rate limiting** on the webhook endpoint (prevent abuse)
-- **Webhook signature verification** (validate requests are from known sources)
-- **Async task queue** (Celery + Redis) so the webhook returns immediately and AI processing happens in the background
-- **Database integration** (replace in-memory mock with actual Postgres calls)
-- **Retry logic** on Claude API calls with exponential backoff
-- **Unit tests** with `pytest` and mocked API responses
-- **Docker + docker-compose** for one-command local setup
