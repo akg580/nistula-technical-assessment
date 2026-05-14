@@ -1,38 +1,45 @@
 # Part 3 — Thinking Questions
 
+**Scenario:** 3am. Vikram at Villa B1: *"There is no hot water and we have guests arriving in 4 hours. This is unacceptable. I want a refund for tonight."*
+
+---
+
 ## Question A — The Immediate Response
-**Message to send at 3am:**
 
-Hi [Guest Name], I am very sorry you are facing this, and I understand how urgent it is with breakfast guests arriving soon.  
-I have escalated this as a priority to our on-call caretaker right now, and you will receive a call update within 15 minutes.  
-We will resolve the hot water issue first and then review your refund request with our duty manager immediately after.  
-— Priya, Guest Relations Manager, Nistula
+> Hi Vikram, I'm sincerely sorry — this is not the experience we want for you at all.
+>
+> I'm escalating this to our caretaker right now. You should receive a call within 15 minutes.
+>
+> We will make this right. I'll personally follow up on tonight's charges once the issue is fixed.
+>
+> — Priya, Guest Relations Manager, Nistula
 
-**Why this wording (2-3 lines):**  
-It acknowledges emotion first, gives a concrete next step with a clear time commitment, and avoids making an unauthorized refund promise. It is calm, accountable, and action-oriented, which helps de-escalate at 3am.
+**Why:** Three things in sequence: validate the anger without defensiveness; give a concrete time-boxed commitment (vague promises at 3am read as brush-offs); acknowledge the refund without granting it. Signing as a named manager signals escalation and reduces hostility.
+
+---
 
 ## Question B — The System Design
-Beyond sending the message, the platform should:
 
-1. Classify as `complaint` and force `action = escalate` (no auto-send path).  
-2. Open a P1 incident linked to guest, property, reservation, and message ID.  
-3. Trigger parallel alerts: caretaker (call/SMS/WhatsApp), duty manager, and backup operations lead.  
-4. Start SLA timers:  
-   - 15 min: acknowledgement required from caretaker  
-   - 30 min: if no acknowledgement, auto-escalate to backup caretaker + property manager and place an automated voice call  
-5. Log every event with timestamps (received, classified, notified, acknowledged, resolved), including who acted and when.  
-6. Send proactive guest updates every 15 minutes until resolution.  
-7. Keep incident open until both conditions are met: (a) issue marked fixed by ops, and (b) guest confirms restoration or does not contest after follow-up.
+The classifier hard-routes `complaint` to `escalate` regardless of confidence score. Within 30 seconds:
+
+- P1 incident created, linked to Vikram's reservation and guest profile.
+- SMS + WhatsApp fires simultaneously to the caretaker and duty manager.
+- AI draft gets a 90-second edit window; auto-sends if untouched.
+
+**15-minute timer:** If no caretaker acknowledgement — voice call fires to the property manager (Exotel/Twilio). At 30 minutes: backup caretaker is tried and Vikram receives: *"We haven't forgotten you — our team is on the way."*
+
+Everything is timestamped: alert sent, acknowledged/not, calls attempted. Incident stays open until the caretaker resolves it and a follow-up confirms Vikram is satisfied.
+
+---
 
 ## Question C — The Learning
-If this is the third hot-water complaint in two months at Villa B1, the system should treat it as a recurring failure pattern, not isolated incidents.
 
-What I would build:
+A nightly job counts complaints by property + keyword cluster. On the third "hot water" occurrence at Villa B1 in 60 days it auto-creates a P1 maintenance ticket.
 
-1. Pattern detector: rolling 60-day complaint clustering by property + issue type.  
-2. Auto-created preventive maintenance ticket with due date and owner when threshold is hit.  
-3. Pre-check workflow before each check-in (geyser test, pressure check, backup heater check) with mandatory completion proof.  
-4. Root-cause coding on incident closure and monthly reliability dashboard by property.  
-5. Escalation policy that blocks instant-booking on the property if unresolved critical utilities exceed threshold.
+**To prevent a fourth complaint:**
 
-This converts complaint history into preventive operations and reduces repeat guest impact.
+1. **Pre-stay checklist:** Caretaker gets an automatic task 2 hours before every Villa B1 check-in — test the geyser, mark done. If uncompleted, duty manager is notified before the guest arrives.
+
+2. **Proactive message (48hrs before check-in):** *"Hi [Guest], our caretaker has completed a pre-arrival check. If anything isn't right when you arrive, message us immediately."*
+
+3. **Root cause on close:** Agent must select a root cause when closing any maintenance complaint. After three identical causes the system flags it as a structural defect requiring a contractor — not another temporary fix. Reactive complaint data becomes preventive maintenance.

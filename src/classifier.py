@@ -58,11 +58,12 @@ PATTERNS: dict[str, list[str]] = {
         r"\b(rate|price|pricing|cost|how much|charges?|fee|tariff)\b",
         r"\b(per night|nightly rate|total (cost|price|amount))\b",
         r"\b(inr|rupee|rs\.?|₹)\b",
-        r"\b(\d+\s*(adult|guest|person|people|night|pax))\b",
+        # NOTE: number+people alone is ambiguous ("4 people" in a general query).
+        # Pricing is signalled by price words above; this pattern was removed.
         r"\b(what (would|will|does) it cost|quote|estimate)\b",
     ],
     "pre_sales_availability": [
-        r"\b(available|availability|is (it|the villa) free|any (opening|slot))\b",
+        r"\b(availability|is (it|the villa|the property) (available|free)|any (opening|slot|availability))\b",
         r"\b(book|booking|want to (book|reserve|stay))\b",
         r"\b(from .{3,20} to .{3,20}|between .{3,20} and .{3,20})\b",
         r"\b(check.?in|check.?out|arrive|arrival|departure)\b",
