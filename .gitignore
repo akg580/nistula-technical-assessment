@@ -12,7 +12,6 @@ env/
 
 # Env files
 .env
-.env.example
 
 # Tooling
 .pytest_cache/
@@ -23,3 +22,7 @@ env/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local runtime logs
+uvicorn.out.log
+uvicorn.err.log

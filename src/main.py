@@ -23,11 +23,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import httpx
 
-from models import InboundMessage, NormalisedMessage, WebhookResponse
-from classifier import classify_query
-from property_context import get_property_context_string
-from ai_handler import get_claude_reply
-from confidence import calculate_confidence, determine_action
+from src.models import InboundMessage, NormalisedMessage, WebhookResponse
+from src.classifier import classify_query
+from src.property_context import get_property_context_string
+from src.ai_handler import get_claude_reply
+from src.confidence import calculate_confidence, determine_action
 
 # ── Bootstrap ─────────────────────────────────────────────────────────────────
 
